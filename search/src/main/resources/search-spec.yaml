@@ -1,0 +1,114 @@
+openapi: 3.0.0
+info:
+  title: Search Service API
+  version: 1.0.0
+tags:
+  - name: Search
+    description: Search operations
+paths:
+  /api/search/persons/search:
+    post:
+      tags:
+        - Search
+      summary: Complex search across multiple optional fields
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonSearchCriteria'
+      responses:
+        '200':
+          description: List of person profiles matching the criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PersonProfile'
+components:
+  schemas:
+    PersonSearchCriteria:
+      type: object
+      properties:
+        name:
+          type: string
+        surname:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        location:
+          type: string
+        rank:
+          type: string
+        department:
+          type: string
+        currentPosition:
+          type: string
+        commanderId:
+          type: string
+        skills:
+          type: array
+          items:
+            type: string
+        certifications:
+          type: array
+          items:
+            type: string
+        projectName:
+          type: string
+        projectDescription:
+          type: string
+    PersonProfile:
+      type: object
+      properties:
+        personId:
+          type: string
+        name:
+          type: string
+        surname:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        location:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date-time
+        startOfServiceDate:
+          type: string
+          format: date-time
+        rank:
+          type: string
+        department:
+          type: string
+        currentPosition:
+          type: string
+        commanderId:
+          type: string
+        lastUpdated:
+          type: string
+          format: date-time
+        skills:
+          type: array
+          items:
+            type: string
+        pastProjects:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectInfo'
+        certifications:
+          type: array
+          items:
+            type: string
+    ProjectInfo:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string

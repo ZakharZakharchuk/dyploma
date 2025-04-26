@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.0
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - bootstrap.memory_lock=true
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+
+  kafka:
+    container_name: kafka
+    image: apache/kafka:latest
+    hostname: kafka
+    ports: ["29092:9092"]
+    networks:
+        - search
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: LOCALHOST://localhost:29092,DOCKER://kafka:29092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LOCALHOST:PLAINTEXT,CONTROLLER:PLAINTEXT,DOCKER:PLAINTEXT
+      KAFKA_LISTENERS: LOCALHOST://:9092,CONTROLLER://:9093,DOCKER://:29092
+      KAFKA_NODE_ID: 1
+      KAFKA_NUM_PARTITIONS: 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    networks:
+        - search
+    ports:
+        - "8088:8088"
+    restart: always
+    environment:
+      SERVER_PORT: 8088
+      KAFKA_CLUSTER_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+    depends_on:
+      - kafka
+
+  kafka-init-topics:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka-init-topics
+    networks:
+        - search
+    depends_on:
+        - kafka
+    command: "bash -c 'echo Creating topics... && \
+      kafka-topics --create --topic person-updates-json --partitions 1 --replication-factor 1 --if-not-exists --bootstrap-server kafka:29092 && \
+      kafka-topics --create --topic qualification-updates-json --partitions 1 --replication-factor 1 --if-not-exists --bootstrap-server kafka:29092 && \
+      kafka-topics --create --topic person-updates-dlq --partitions 1 --replication-factor 1 --if-not-exists --bootstrap-server kafka:29092 && \
+      kafka-topics --create --topic qualification-updates-dlq --partitions 1 --replication-factor 1 --if-not-exists --bootstrap-server kafka:29092'"
+
+volumes:
+  esdata:
+
+networks:
+  search:
+    name: search

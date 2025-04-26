@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: search
+  elasticsearch:
+    uris: http://localhost:9200
+    connection-timeout: 5s
+    socket-timeout: 10s
+    username:
+    password:
+  kafka:
+    bootstrap-servers: localhost:29092
+    properties:
+        security:
+          protocol: PLAINTEXT
+        sasl:
+          mechanism: PLAIN
+
+messaging:
+  events:
+    person:
+      receive-topic: person-updates-json
+      consumer-group-id: person-updates
+      dlq-topic: person-updates-dlq
+      event-types: "PersonUpdated,PersonDeleted"
+    qualification:
+      receive-topic: qualification-updates-json
+      consumer-group-id: qualification-updates
+      dlq-topic: qualification-updates-dlq
+      event-types: "QualificationUpdated"
+    retry-interval: 10000
+
