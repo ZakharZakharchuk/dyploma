@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PersonDeleted",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The unique identifier for the event."
+    },
+    "type": {
+      "type": "string",
+      "default": "PersonDeleted",
+      "description": "Event type"
+    },
+    "time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The time when the event occurred."
+    },
+    "data": {
+      "type": "object",
+      "title": "PersonDeletedData",
+      "description": "The data object contains the details of the person who has been updated.",
+      "properties": {
+        "personId": {
+          "type": "string",
+          "required": true
+        }
+      }
+    }
+  }
+}

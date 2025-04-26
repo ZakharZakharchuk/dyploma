@@ -1,0 +1,30 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.18.3")
+}
+description = 'Event contracts'
+
+jar {
+    enabled = true
+    archiveBaseName = rootProject.name
+}
+
+processResources {
+    from("$rootDir/domains/") {
+        include '**/schema.json'
+    }
+}
+
+java {
+    withSourcesJar()
+}

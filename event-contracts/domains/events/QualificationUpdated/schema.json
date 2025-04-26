@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "QualificationUpdated",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The unique identifier for the event."
+    },
+    "type": {
+      "type": "string",
+      "default": "QualificationUpdated",
+      "description": "Event type"
+    },
+    "time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The time when the event occurred."
+    },
+    "data": {
+      "type": "object",
+      "title": "QualificationUpdatedData",
+      "description": "The data object contains the updated qualification information for the person.",
+      "properties": {
+        "personId": {
+          "type": "string",
+          "description": "The ID of the person whose qualifications are being updated.",
+          "required": true
+        },
+        "skills": {
+          "type": "array",
+          "description": "List of skills the person possesses.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "projects": {
+          "type": "array",
+          "description": "List of projects the person participated in.",
+          "items": {
+            "$ref": "#/$defs/ProjectInfo"
+          }
+        },
+        "lastUpdated": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The time when the qualifications were last updated."
+        }
+      }
+    }
+  },
+  "$defs": {
+    "ProjectInfo": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

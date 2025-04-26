@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PersonUpdated",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The unique identifier for the event."
+    },
+    "type": {
+      "type": "string",
+      "default": "PersonUpdated",
+      "description": "Event type"
+    },
+    "time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The time when the event occurred."
+    },
+    "data": {
+      "type": "object",
+      "title": "PersonUpdatedData",
+      "description": "The data object contains the details of the person who has been updated.",
+      "properties": {
+        "personId": {
+          "type": "string",
+          "required": true
+        },
+        "name": {
+          "type": "string"
+        },
+        "surname": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "startOfServiceDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "rank": {
+          "type": "string"
+        },
+        "department": {
+          "type": "string"
+        },
+        "currentPosition": {
+          "type": "string"
+        },
+        "commanderId": {
+          "type": "string"
+        },
+        "lastUpdated": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}
