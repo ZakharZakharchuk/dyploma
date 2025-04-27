@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: qualification-svc
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/qualificationdb
+      database: qualificationdb
+server:
+  port: 8082

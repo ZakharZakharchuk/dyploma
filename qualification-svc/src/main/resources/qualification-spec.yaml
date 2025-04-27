@@ -1,0 +1,153 @@
+openapi: 3.0.0
+info:
+  title: Qualification Service API
+  version: 1.0.0
+tags:
+  - name: Qualification
+    description: Qualification and past projects
+paths:
+  /qualification/{personId}:
+    get:
+      summary: Get full qualification profile by personId
+      parameters:
+        - in: path
+          name: personId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Qualification profile found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QualificationProfile'
+
+  /qualification/skill:
+    post:
+      summary: Add a skill to a person
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SkillRequest'
+      responses:
+        '200':
+          description: Skill added
+
+  /qualification/skill/{skillId}:
+    delete:
+      summary: Delete a skill by skillId
+      parameters:
+        - in: path
+          name: skillId
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Skill deleted
+
+  /qualification/project:
+    post:
+      summary: Add a project to a person
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+      responses:
+        '200':
+          description: Project added
+    put:
+      summary: Update an existing project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+      responses:
+        '200':
+          description: Project updated
+
+  /qualification/project/{projectId}:
+    delete:
+      summary: Delete a project by projectId
+      parameters:
+        - in: path
+          name: projectId
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Project deleted
+
+components:
+  schemas:
+    QualificationProfile:
+      type: object
+      properties:
+        personId:
+          type: string
+        skills:
+          type: array
+          items:
+            $ref: '#/components/schemas/Skill'
+        projects:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectInfo'
+
+    Skill:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+
+    ProjectInfo:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        description:
+          type: string
+
+    SkillRequest:
+      type: object
+      properties:
+        personId:
+          type: string
+        name:
+          type: string
+
+    ProjectRequest:
+      type: object
+      properties:
+        id:
+          type: string
+        personId:
+          type: string
+        name:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        description:
+          type: string
