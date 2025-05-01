@@ -31,6 +31,9 @@ public class PersonProfileProviderImpl implements PersonProfileProvider {
 
     @Override
     public Optional<PersonProfile> getById(String id) {
+        PersonProfileEntity entity = personProfileRepository.findById(id)
+              .orElse(null);
+        PersonProfile personProfile = personProfileEntityMapper.toDomain(entity);
         return personProfileRepository.findById(id)
               .map(personProfileEntityMapper::toDomain);
     }

@@ -1,5 +1,6 @@
 package com.example.search.domain.model;
 
+import java.time.Instant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,5 +14,7 @@ public class ProjectInfo {
 
     private String name;
     private String description;
+    private Instant startDate;
+    private Instant endDate;
 
 }

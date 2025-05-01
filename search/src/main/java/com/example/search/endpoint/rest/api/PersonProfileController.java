@@ -1,7 +1,5 @@
 package com.example.search.endpoint.rest.api;
 
-import static org.springframework.http.ResponseEntity.ok;
-
 import com.example.search.domain.service.PersonProfileService;
 import com.example.search.endpoint.mapper.PersonProfileDtoMapper;
 import com.example.search.endpoint.mapper.PersonSearchCriteriaDtoMapper;
@@ -12,7 +10,6 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 @RequiredArgsConstructor

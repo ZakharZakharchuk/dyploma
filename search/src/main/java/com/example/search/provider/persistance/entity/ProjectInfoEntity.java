@@ -13,4 +13,6 @@ public class ProjectInfoEntity {
 
     private String name;
     private String description;
+    private String startDate;
+    private String endDate;
 }
