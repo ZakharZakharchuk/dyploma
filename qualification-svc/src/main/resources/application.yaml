@@ -5,5 +5,21 @@ spring:
     mongodb:
       uri: mongodb://localhost:27017/qualificationdb
       database: qualificationdb
+  kafka:
+    bootstrap-servers: localhost:29092
+    properties:
+      security:
+        protocol: PLAINTEXT
+      sasl:
+        mechanism: PLAIN
+
+messaging:
+  events:
+    qualification:
+      send-topic: qualification-updates-json
+    retry-interval: 10000
+
 server:
   port: 8082
+
+
