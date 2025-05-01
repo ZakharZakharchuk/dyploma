@@ -15,10 +15,14 @@ public class CloudEventProperties {
     private Long retryInterval;
     private Long maxAttempts = Long.MAX_VALUE;
     private DomainEventType qualification;
+    private DomainEventType person;
 
     @Data
     public static class DomainEventType {
 
+        private String receiveTopic;
         private String sendTopic;
+        private String dlqTopic;
+        private String eventTypes;
     }
 }

@@ -1,7 +1,7 @@
 package com.example.qualificationsvc.provider.messaging;
 
 import com.example.qualificationsvc.domain.port.CloudEventPublishingService;
-import com.example.qualificationsvc.provider.exception.EventPublishingException;
+import com.example.qualificationsvc.provider.messaging.exception.EventPublishingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;

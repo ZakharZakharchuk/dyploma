@@ -13,4 +13,6 @@ public interface ProjectInfoProvider {
 
     void deleteProject(String id);
 
+    void deleteAllByPersonId(String personId);
+
 }

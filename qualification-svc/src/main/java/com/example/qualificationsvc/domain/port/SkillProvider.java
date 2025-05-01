@@ -9,4 +9,6 @@ public interface SkillProvider {
     List<Skill> getByPersonId(String personId);
 
     void deleteSkill(String id);
+
+    void deleteAllByPersonId(String personId);
 }

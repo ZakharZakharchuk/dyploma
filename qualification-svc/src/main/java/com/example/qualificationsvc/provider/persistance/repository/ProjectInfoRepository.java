@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface ProjectInfoRepository extends MongoRepository<ProjectInfoEntity, String> {
 
     List<ProjectInfoEntity> findAllByPersonId(String personId);
+
+    void deleteAllByPersonId(String personId);
 }

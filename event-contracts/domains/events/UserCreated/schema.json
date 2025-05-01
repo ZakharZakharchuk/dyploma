@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "UserCreated",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The unique identifier for the event"
+    },
+    "type": {
+      "type": "string",
+      "const": "UserCreated",
+      "description": "Event type identifier"
+    },
+    "time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The time when the event was emitted",
+      "customDateTimePattern": "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+    },
+    "data": {
+      "type": "object",
+      "title": "UserCreatedData",
+      "properties": {
+        "personId": {
+          "type": "string",
+          "description": "The unique ID of the person this user is linked to"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The email of the user"
+        },
+        "password": {
+          "type": "string",
+          "description": "Hashed password"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["USER", "ADMIN", "HR"],
+          "description": "The role assigned to this user"
+        }
+      },
+      "required": ["personId", "email", "password", "role"]
+    }
+  },
+  "required": ["id", "type", "time", "data"]
+}

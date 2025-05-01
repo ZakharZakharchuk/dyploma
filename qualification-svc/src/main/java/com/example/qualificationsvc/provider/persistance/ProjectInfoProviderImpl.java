@@ -40,4 +40,9 @@ public class ProjectInfoProviderImpl implements ProjectInfoProvider {
     public void deleteProject(String id) {
         projectInfoRepository.deleteById(id);
     }
+
+    @Override
+    public void deleteAllByPersonId(String personId) {
+        projectInfoRepository.deleteAllByPersonId(personId);
+    }
 }

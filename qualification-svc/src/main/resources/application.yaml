@@ -17,6 +17,11 @@ messaging:
   events:
     qualification:
       send-topic: qualification-updates-json
+    person:
+      receive-topic: person-updates-json
+      consumer-group-id: person-updates-qualification
+      dlq-topic: person-updates-dlq
+      event-types: "PersonDeleted"
     retry-interval: 10000
 
 server:

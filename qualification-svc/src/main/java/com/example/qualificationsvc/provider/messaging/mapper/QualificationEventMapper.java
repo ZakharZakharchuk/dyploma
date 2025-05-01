@@ -1,4 +1,4 @@
-package com.example.qualificationsvc.provider.mapper;
+package com.example.qualificationsvc.provider.messaging.mapper;
 
 import com.example.qualificationsvc.config.CommonMapperConfig;
 import com.example.search.endpoint.messaging.dto.QualificationUpdated;

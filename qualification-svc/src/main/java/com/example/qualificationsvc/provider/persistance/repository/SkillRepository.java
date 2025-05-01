@@ -7,4 +7,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 public interface SkillRepository extends MongoRepository<SkillEntity, String> {
 
     List<SkillEntity> findAllByPersonId(String personId);
+
+    void deleteAllByPersonId(String personId);
 }

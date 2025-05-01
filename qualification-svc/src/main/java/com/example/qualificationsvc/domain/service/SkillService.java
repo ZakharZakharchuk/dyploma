@@ -23,4 +23,8 @@ public class SkillService {
     public void deleteSkill(String id) {
         skillProvider.deleteSkill(id);
     }
+
+    public void deleteAllByPersonId(String personId) {
+        skillProvider.deleteAllByPersonId(personId);
+    }
 }

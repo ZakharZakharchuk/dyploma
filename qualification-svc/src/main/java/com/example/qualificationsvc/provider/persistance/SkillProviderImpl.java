@@ -31,4 +31,9 @@ public class SkillProviderImpl implements SkillProvider {
     public void deleteSkill(String id) {
         skillRepository.deleteById(id);
     }
+
+    @Override
+    public void deleteAllByPersonId(String personId) {
+        skillRepository.deleteAllByPersonId(personId);
+    }
 }

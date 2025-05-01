@@ -27,4 +27,7 @@ public class ProjectInfoService {
     public void updateProject(ProjectInfo request) {
         projectInfoProvider.updateProject(request);
     }
+    public void deleteAllByPersonId(String personId) {
+        projectInfoProvider.deleteAllByPersonId(personId);
+    }
 }
