@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: person-service
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/persondb
+      database: persondb
+  kafka:
+    bootstrap-servers: localhost:29092
+    properties:
+      security:
+        protocol: PLAINTEXT
+      sasl:
+        mechanism: PLAIN
+
+messaging:
+  events:
+    person:
+      send-topic: person-updates-json
+    retry-interval: 10000
+
+server:
+  port: 8083

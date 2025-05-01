@@ -1,0 +1,136 @@
+openapi: 3.0.0
+info:
+  title: Person Service API
+  version: 1.0.0
+paths:
+  /person:
+    post:
+      summary: Save a new person record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePersonRequest'
+      responses:
+        '200':
+          description: Person record created
+    put:
+      summary: Update person details
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Person'
+      responses:
+        '204':
+          description: Person updated
+
+  /person/{id}:
+    get:
+      summary: Find person by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Person found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+        '404':
+          description: Person not found
+
+    delete:
+      summary: Delete person record
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Person deleted
+
+components:
+  schemas:
+    Person:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        surname:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        location:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date-time
+        startOfServiceDate:
+          type: string
+          format: date-time
+        rank:
+          type: string
+        department:
+          type: string
+        currentPosition:
+          type: string
+        commanderId:
+          type: string
+        lastUpdated:
+          type: string
+          format: date-time
+
+    CreatePersonRequest:
+      type: object
+      required:
+        - name
+        - surname
+        - email
+        - password
+        - role
+      properties:
+        name:
+          type: string
+        surname:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        location:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date-time
+        startOfServiceDate:
+          type: string
+          format: date-time
+        rank:
+          type: string
+        department:
+          type: string
+        currentPosition:
+          type: string
+        commanderId:
+          type: string
+        password:
+          type: string
+          description: Hashed or raw password to be forwarded to auth-service
+        role:
+          type: string
+          enum: [USER, ADMIN, HR]
