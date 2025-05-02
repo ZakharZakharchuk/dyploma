@@ -64,7 +64,9 @@ services:
       kafka-topics --create --topic person-updates-json --partitions 1 --replication-factor 1 --if-not-exists --bootstrap-server kafka:29092 && \
       kafka-topics --create --topic qualification-updates-json --partitions 1 --replication-factor 1 --if-not-exists --bootstrap-server kafka:29092 && \
       kafka-topics --create --topic person-updates-dlq --partitions 1 --replication-factor 1 --if-not-exists --bootstrap-server kafka:29092 && \
-      kafka-topics --create --topic qualification-updates-dlq --partitions 1 --replication-factor 1 --if-not-exists --bootstrap-server kafka:29092'"
+      kafka-topics --create --topic qualification-updates-dlq --partitions 1 --replication-factor 1 --if-not-exists --bootstrap-server kafka:29092 && \
+      kafka-topics --create --topic user-updates-json --partitions 1 --replication-factor 1 --if-not-exists --bootstrap-server kafka:29092 && \
+      kafka-topics --create --topic user-updates-dlq --partitions 1 --replication-factor 1 --if-not-exists --bootstrap-server kafka:29092'"
 
 volumes:
   esdata:

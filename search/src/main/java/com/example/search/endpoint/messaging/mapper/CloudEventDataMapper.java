@@ -7,7 +7,6 @@ import com.example.search.endpoint.messaging.dto.QualificationUpdatedData;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 
 @Mapper(config = CommonMapperConfig.class)
 public interface CloudEventDataMapper {
