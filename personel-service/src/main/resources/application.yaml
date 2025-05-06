@@ -17,7 +17,13 @@ messaging:
   events:
     person:
       send-topic: person-updates-json
+    user:
+      send-topic: user-updates-json
     retry-interval: 10000
+
+## For local development only
+jwt:
+  jwt-secret: c6193afc3aa8c308826f71646e1c59cf84e0c7ed5d435003a0f09bb5acea1cea362cdd18ab7d684579a9b56e2f6c8476d3b0a3fd7333c7f23f6013b143f07fa4fa60749abe05ac0e56dd2aa8797c290eea66ffaff133ae93140beee73db8f4cd9fb742d5aa4d1ce2a5921a9cfb4420596249a981adf0037974e400483db20dc54ae2af4868af3fb09406cdc16bac8ab92574dcd1044ccd76746ca9ca2a4df040e4d187d04174086395cdcbec3a7fc17458465e70a886cdcfe9f5da35e1d9aa06eb3b7761674c7323f0e52b7384381018cae7abd49e4094fcb5ebe95c1cc8cfea52985c1a602f0e5e0c96bb36ea4a25932783bc1370bc3a30e5fa24c2bc4f7b0d
 
 server:
   port: 8083

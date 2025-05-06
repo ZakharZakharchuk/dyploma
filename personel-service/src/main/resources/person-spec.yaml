@@ -133,4 +133,4 @@ components:
           description: Hashed or raw password to be forwarded to auth-service
         role:
           type: string
-          enum: [USER, ADMIN, HR]
+          enum: [USER, ADMIN, HR, MANAGER]

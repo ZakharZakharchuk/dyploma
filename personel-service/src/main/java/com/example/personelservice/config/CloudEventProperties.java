@@ -15,6 +15,7 @@ public class CloudEventProperties {
     private Long retryInterval;
     private Long maxAttempts = Long.MAX_VALUE;
     private DomainEventType person;
+    private DomainEventType user;
     @Data
     public static class DomainEventType {
 

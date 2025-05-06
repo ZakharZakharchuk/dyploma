@@ -16,21 +16,14 @@ public class QualificationService {
 
     private final ProjectInfoService projectInfoService;
     private final SkillService skillService;
-    private final QualificationEventProvider qualificationEventProvider;
 
     public QualificationProfile findById(String id) {
         List<Skill> skills = skillService.getByPersonId(id);
         List<ProjectInfo> projects = projectInfoService.getByPersonId(id);
-        QualificationProfile qualificationProfile = QualificationProfile.builder()
+        return QualificationProfile.builder()
               .personId(id)
               .skills(skills)
               .projects(projects)
               .build();
-        sendQualificationEvent(qualificationProfile);
-        return qualificationProfile;
-    }
-
-    public void sendQualificationEvent(QualificationProfile qualificationProfile) {
-        qualificationEventProvider.sendQualificationEvent(qualificationProfile);
     }
 }

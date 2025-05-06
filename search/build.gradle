@@ -42,6 +42,10 @@ dependencies {
     implementation "org.mapstruct:mapstruct:${mapstructVersion}"
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.0'
     eventApiContracts files("D:/kpi/dyploma/event-contracts/build/libs/event-contracts-0.0.1-SNAPSHOT.jar")
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 }
 
 tasks.named('test') {

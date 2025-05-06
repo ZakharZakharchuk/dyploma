@@ -1,6 +1,10 @@
 package com.example.qualificationsvc.domain.service;
 
+import com.example.qualificationsvc.domain.model.ProjectInfo;
+import com.example.qualificationsvc.domain.model.QualificationProfile;
 import com.example.qualificationsvc.domain.model.Skill;
+import com.example.qualificationsvc.domain.port.ProjectInfoProvider;
+import com.example.qualificationsvc.domain.port.QualificationEventProvider;
 import com.example.qualificationsvc.domain.port.SkillProvider;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +15,9 @@ import org.springframework.stereotype.Service;
 public class SkillService {
 
     private final SkillProvider skillProvider;
+    private final QualificationEventProvider qualificationEventProvider;
+    private final ProjectInfoProvider projectInfoProvider;
+
 
     public List<Skill> getByPersonId(String personId) {
         return skillProvider.getByPersonId(personId);
@@ -18,6 +25,7 @@ public class SkillService {
 
     public void addSkill(Skill skill) {
         skillProvider.addSkill(skill);
+        sendQualificationEvent(buildQualificationProfile(skill.getPersonId()));
     }
 
     public void deleteSkill(String id) {
@@ -26,5 +34,20 @@ public class SkillService {
 
     public void deleteAllByPersonId(String personId) {
         skillProvider.deleteAllByPersonId(personId);
+        sendQualificationEvent(buildQualificationProfile(personId));
+    }
+
+    public void sendQualificationEvent(QualificationProfile qualificationProfile) {
+        qualificationEventProvider.sendQualificationEvent(qualificationProfile);
+    }
+
+    private QualificationProfile buildQualificationProfile(String personId) {
+        List<ProjectInfo> projects = projectInfoProvider.getByPersonId(personId);
+        List<Skill> skills = skillProvider.getByPersonId(personId);
+        return QualificationProfile.builder()
+              .personId(personId)
+              .projects(projects)
+              .skills(skills)
+              .build();
     }
 }

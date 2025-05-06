@@ -9,7 +9,7 @@
     },
     "type": {
       "type": "string",
-      "const": "UserCreated",
+      "default": "UserCreated",
       "description": "Event type identifier"
     },
     "time": {
@@ -37,7 +37,7 @@
         },
         "role": {
           "type": "string",
-          "enum": ["USER", "ADMIN", "HR"],
+          "enum": ["USER", "ADMIN", "HR", "MANAGER"],
           "description": "The role assigned to this user"
         }
       },
