@@ -28,6 +28,7 @@ public class PersonProfileController implements SearchApi {
     public ResponseEntity<List<PersonProfileDto>> apiSearchPersonsSearchPost(
           PersonSearchCriteriaDto personSearchCriteriaDto) {
         if (authorizationService.isAdmin() ||
+              authorizationService.isManager() ||
               authorizationService.isHR()) {
             List<PersonProfileDto> result = personProfileService.search(
                         personSearchCriteriaDtoMapper.toDomain(personSearchCriteriaDto)).stream()

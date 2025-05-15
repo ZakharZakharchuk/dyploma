@@ -29,6 +29,11 @@ public class AuthorizationService {
               && user.getPersonId().equals(requestedPersonId);
     }
 
+    public boolean isUser() {
+        UserDetails user = getUserDetails();
+        return user != null && user.getRole().equals(Role.USER.getRole());
+    }
+
     private UserDetails getUserDetails() {
         return (UserDetails)
               SecurityContextHolder.getContext().getAuthentication().getPrincipal();

@@ -1,5 +1,6 @@
 package com.example.personelservice.domain.service;
 
+import com.example.personelservice.domain.exception.ObjectNotFoundException;
 import com.example.personelservice.domain.model.Person;
 import com.example.personelservice.domain.port.PersonEventProvider;
 import com.example.personelservice.domain.port.PersonProvider;
@@ -27,12 +28,12 @@ public class PersonService {
 
     public Person getById(String id) {
         return personProvider.getById(id).orElseThrow(
-              () -> new IllegalArgumentException("Person not found"));
+              () -> new ObjectNotFoundException("Person"));
     }
 
     public void updatePerson(Person person) {
         if (personProvider.getById(person.getId()).isEmpty()) {
-            throw new IllegalArgumentException("Person not found");
+            throw new ObjectNotFoundException("Person");
         }
         Person updatedPerson = personProvider.update(person);
         personEventProvider.sendPersonUpdatedEvent(updatedPerson);

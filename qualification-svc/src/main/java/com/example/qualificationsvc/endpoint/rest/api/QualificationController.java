@@ -56,7 +56,8 @@ public class QualificationController implements DefaultApi {
     //TODO resolve delete by user
     @Override
     public ResponseEntity<Void> qualificationProjectProjectIdDelete(String projectId) {
-        if (authorizationService.isAdmin() || authorizationService.isManager()) {
+        if (authorizationService.isAdmin() || authorizationService.isManager()
+              || authorizationService.isUser()) {
             projectInfoService.deleteProject(projectId);
             return ResponseEntity.noContent().build();
         }
@@ -91,7 +92,8 @@ public class QualificationController implements DefaultApi {
     //TODO resolve delete by user
     @Override
     public ResponseEntity<Void> qualificationSkillSkillIdDelete(String skillId) {
-        if (authorizationService.isAdmin() || authorizationService.isManager()) {
+        if (authorizationService.isAdmin() || authorizationService.isManager()
+              || authorizationService.isUser()) {
             skillService.deleteSkill(skillId);
             return ResponseEntity.noContent().build();
         }
