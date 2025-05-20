@@ -1,12 +1,5 @@
 package com.example.personelservice.domain.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+public record UserDetails(String email, String personId, String role) {
 
-@Data
-@AllArgsConstructor
-public class UserDetails {
-    private final String email;
-    private final String personId;
-    private final String role;
 }

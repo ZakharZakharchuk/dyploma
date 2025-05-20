@@ -1,7 +1,9 @@
 package com.example.userservice.endpoint.messaging.dto;
 
 public enum EventTypes {
-    USER_CREATED("UserCreated");
+    USER_CREATED("UserCreated"),
+    PERSON_DELETED("PersonDeleted");
+
     private final String eventType;
 
     EventTypes(String eventType) {

@@ -1,5 +1,6 @@
 package com.example.qualificationsvc.domain.service;
 
+import com.example.qualificationsvc.domain.exception.ObjectNotFoundException;
 import com.example.qualificationsvc.domain.model.ProjectInfo;
 import com.example.qualificationsvc.domain.model.QualificationProfile;
 import com.example.qualificationsvc.domain.model.Skill;
@@ -28,7 +29,10 @@ public class SkillService {
         sendQualificationEvent(buildQualificationProfile(skill.getPersonId()));
     }
 
-    public void deleteSkill(String id) {
+    public void deleteSkill(String id, String personId) {
+        if (getByPersonId(personId).stream().noneMatch(skill -> skill.getId().equals(id))) {
+            throw new ObjectNotFoundException("No skill with such id found for personId: " + personId);
+        }
         skillProvider.deleteSkill(id);
     }
 

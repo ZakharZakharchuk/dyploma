@@ -7,4 +7,6 @@ public interface UserProvider {
     void createUser(User user);
 
     User findByEmail(String email);
+
+    void deleteUser(String personId);
 }

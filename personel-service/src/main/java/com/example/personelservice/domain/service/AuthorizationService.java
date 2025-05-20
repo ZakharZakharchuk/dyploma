@@ -10,23 +10,23 @@ public class AuthorizationService {
 
     public boolean isAdmin() {
         UserDetails user = getUserDetails();
-        return user != null && user.getRole().equals(Role.ADMIN.getRole());
+        return user != null && user.role().equals(Role.ADMIN.getRole());
     }
 
     public boolean isHR() {
         UserDetails user = getUserDetails();
-        return user != null && user.getRole().equals(Role.HR.getRole());
+        return user != null && user.role().equals(Role.HR.getRole());
     }
 
     public boolean isManager() {
         UserDetails user = getUserDetails();
-        return user != null && user.getRole().equals(Role.MANAGER.getRole());
+        return user != null && user.role().equals(Role.MANAGER.getRole());
     }
 
     public boolean isEligibleUser(String requestedPersonId) {
         UserDetails user = getUserDetails();
-        return user != null && user.getRole().equals(Role.USER.getRole())
-              && user.getPersonId().equals(requestedPersonId);
+        return user != null && user.role().equals(Role.USER.getRole())
+              && user.personId().equals(requestedPersonId);
     }
 
     private UserDetails getUserDetails() {

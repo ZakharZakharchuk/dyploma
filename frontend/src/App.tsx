@@ -13,6 +13,7 @@ import RequireRole from './auth/RequireRole';
 import RequireRoles from './auth/RequireRoles';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import SelectionPage from './pages/person/SelectionPage';
 import './App.css';
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
             <Route path="/search" element={<RequireRoles roles={["ADMIN", "MANAGER", "HR"]}><SearchPage /></RequireRoles>} />
             <Route path="/create" element={<RequireRoles roles={["ADMIN", "MANAGER"]}><CreateUserPage /></RequireRoles>} />
             <Route path="/person/:personId/update" element={<RequireRoles roles={["ADMIN", "MANAGER"]}><UpdatePersonPage /></RequireRoles>} />
+            <Route path="/selection" element={<RequireRoles roles={["ADMIN", "HR"]}><SelectionPage /></RequireRoles>} />
             <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
         </main>

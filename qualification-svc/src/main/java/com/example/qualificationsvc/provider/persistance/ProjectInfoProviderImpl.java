@@ -1,5 +1,6 @@
 package com.example.qualificationsvc.provider.persistance;
 
+import com.example.qualificationsvc.domain.exception.ObjectNotFoundException;
 import com.example.qualificationsvc.domain.model.ProjectInfo;
 import com.example.qualificationsvc.domain.port.ProjectInfoProvider;
 import com.example.qualificationsvc.domain.service.ProjectInfoService;
@@ -25,7 +26,7 @@ public class ProjectInfoProviderImpl implements ProjectInfoProvider {
     @Override
     public void updateProject(ProjectInfo projectInfo) {
         projectInfoRepository.findById(projectInfo.getId())
-              .orElseThrow(() -> new IllegalArgumentException("Project not found"));
+              .orElseThrow(() -> new ObjectNotFoundException("Project not found"));
         projectInfoRepository.save(projectInfoMapper.toEntity(projectInfo));
     }
 

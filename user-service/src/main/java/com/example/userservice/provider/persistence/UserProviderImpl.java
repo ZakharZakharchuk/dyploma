@@ -26,4 +26,9 @@ public class UserProviderImpl implements UserProvider {
               .map(userEntityMapper::toDomain)
               .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
+
+    @Override
+    public void deleteUser(String personId) {
+        userRepository.deleteByPersonId(personId);
+    }
 }

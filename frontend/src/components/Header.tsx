@@ -1,4 +1,3 @@
-// components/Header.tsx
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
@@ -23,6 +22,7 @@ const Header = () => {
           {role === 'USER' && <Link to={`/person/${personId}`}>Dashboard</Link>}
           {['ADMIN', 'MANAGER', 'HR'].includes(role) && <Link to="/search">Search</Link>}
           {['ADMIN', 'MANAGER'].includes(role) && <Link to="/create">Create User</Link>}
+          {['ADMIN', 'HR'].includes(role) && <Link to="/selection">Selection</Link>}
         </nav>
         <div className="header-right">
           {role && <button onClick={logout}>Logout</button>}

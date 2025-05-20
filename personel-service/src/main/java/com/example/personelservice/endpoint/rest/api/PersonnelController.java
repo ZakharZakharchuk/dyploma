@@ -1,5 +1,6 @@
 package com.example.personelservice.endpoint.rest.api;
 
+import com.example.personelservice.domain.exception.UnauthorizedAccessException;
 import com.example.personelservice.domain.model.Person;
 import com.example.personelservice.domain.service.AuthorizationService;
 import com.example.personelservice.domain.service.PersonService;
@@ -9,7 +10,6 @@ import com.example.personelservice.endpoint.rest.dto.CreatePersonRequestDto;
 import com.example.personelservice.endpoint.rest.dto.PersonDto;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,7 +29,7 @@ public class PersonnelController implements DefaultApi {
             personService.deletePerson(id);
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        throw new UnauthorizedAccessException();
     }
 
     @Override
@@ -40,7 +40,7 @@ public class PersonnelController implements DefaultApi {
               authorizationService.isEligibleUser(id)) {
             return ResponseEntity.ok(personDtoMapper.toDto(personService.getById(id)));
         }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        throw new UnauthorizedAccessException();
     }
 
     @Override
@@ -49,7 +49,7 @@ public class PersonnelController implements DefaultApi {
             personService.updatePerson(personDtoMapper.toDomain(personDto));
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        throw new UnauthorizedAccessException();
     }
 
     @Override
@@ -62,6 +62,6 @@ public class PersonnelController implements DefaultApi {
                   personDto.getRole().toString());
             return ResponseEntity.ok().build();
         }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        throw new UnauthorizedAccessException();
     }
 }

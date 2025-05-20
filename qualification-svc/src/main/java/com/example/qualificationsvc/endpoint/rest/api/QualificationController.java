@@ -89,12 +89,11 @@ public class QualificationController implements DefaultApi {
 
     }
 
-    //TODO resolve delete by user
     @Override
     public ResponseEntity<Void> qualificationSkillSkillIdDelete(String skillId) {
         if (authorizationService.isAdmin() || authorizationService.isManager()
               || authorizationService.isUser()) {
-            skillService.deleteSkill(skillId);
+            skillService.deleteSkill(skillId, authorizationService.getUserDetails().getPersonId());
             return ResponseEntity.noContent().build();
         }
 

@@ -26,6 +26,7 @@ public class CloudEventConsumerConfiguration {
     private final ObjectMapper cloudEventMapper;
     private final CloudEventProperties cloudEventProperties;
     private final Map<String, CloudEventConsumer> consumers;
+    private List<String> userEventTypes;
     private List<String> personEventTypes;
 
     public CloudEventConsumerConfiguration(Collection<CloudEventConsumer> consumers,
@@ -39,6 +40,12 @@ public class CloudEventConsumerConfiguration {
 
     @KafkaListener(topics = "${messaging.events.user.receive-topic}",
           groupId = "${messaging.events.user.consumer-group-id}")
+    public void consumeUserEvent(ConsumerRecord<String, String> record) {
+        process(record, userEventTypes);
+    }
+
+    @KafkaListener(topics = "${messaging.events.person.receive-topic}",
+          groupId = "${messaging.events.person.consumer-group-id}")
     public void consumePersonEvent(ConsumerRecord<String, String> record) {
         process(record, personEventTypes);
     }
@@ -87,7 +94,9 @@ public class CloudEventConsumerConfiguration {
 
     @PostConstruct
     protected void loadEventSourcesAndFilters() {
-        this.personEventTypes = asList(
+        this.userEventTypes = asList(
               cloudEventProperties.getUser().getEventTypes().split(DELIMITER));
+        this.personEventTypes = asList(
+              cloudEventProperties.getPerson().getEventTypes().split(DELIMITER));
     }
 }

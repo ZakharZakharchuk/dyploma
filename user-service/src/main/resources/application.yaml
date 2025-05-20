@@ -20,6 +20,11 @@ messaging:
       consumer-group-id: user-updates
       dlq-topic: user-updates-dlq
       event-types: "UserCreated"
+    person:
+      receive-topic: person-updates-json
+      consumer-group-id: person-updates-user-service
+      dlq-topic: person-updates-dlq
+      event-types: "PersonDeleted"
     retry-interval: 10000
 
 server:

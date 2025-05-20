@@ -67,7 +67,6 @@ const UserDashboard = () => {
       });
     });
 
-    // Add Skills Section
     doc.setFontSize(14);
     y += 6;
     doc.text('Skills', margin, y);
@@ -88,7 +87,6 @@ const UserDashboard = () => {
       });
     }
 
-    // Add Projects Section
     doc.setFontSize(14);
     y += 6;
     doc.text('Projects', margin, y);
@@ -116,7 +114,30 @@ const UserDashboard = () => {
     doc.save(`${person.name}_${person.surname}_profile.pdf`);
   };
 
+  const handleAddToSelection = async () => {
+    try {
+      await axios.post('http://localhost:8085/hr-selection', {
+        candidateId: person.id,
+        note: `Added by ${role} via dashboard`
+      });
+      alert('Candidate added to your selection list!');
+    } catch (error) {
+      alert('Failed to add candidate to selection.');
+    }
+  };
 
+  const handleDeleteUser = async () => {
+    const confirmDelete = window.confirm('Are you sure you want to delete this user? This action cannot be undone.');
+    if (!confirmDelete) return;
+
+    try {
+      await axios.delete(`http://localhost:8083/person/${person.id}`);
+      alert('User deleted successfully.');
+      window.location.href = '/search';
+    } catch (error) {
+      alert('Failed to delete user.');
+    }
+  };
 
   return (
       <div style={{ backgroundColor: '#f3efdb', padding: '2rem', minHeight: 'calc(100vh - 120px)' }}>
@@ -141,11 +162,28 @@ const UserDashboard = () => {
 
                 <div style={{ marginTop: '1rem', display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'center' }}>
                   <button className="button" onClick={generatePdf}>Download PDF</button>
+
                   {['ADMIN', 'MANAGER'].includes(role) && (
-                      <button className="button secondary" onClick={() => window.location.href = `/person/${person.id}/update`}>
+                      <button
+                          className="button secondary"
+                          onClick={() => window.location.href = `/person/${person.id}/update`}
+                      >
                         Update Info
                       </button>
                   )}
+
+                  {['ADMIN', 'HR'].includes(role) && (
+                      <button className="button" onClick={handleAddToSelection}>
+                        Add to Selection List
+                      </button>
+                  )}
+
+                  {role === 'ADMIN' && (
+                      <button className="button danger" onClick={handleDeleteUser}>
+                        Delete User
+                      </button>
+                  )}
+
                   <button className="button" onClick={() => { setShowSkills(true); setShowProjects(false); }}>View Skills</button>
                   <button className="button" onClick={() => { setShowProjects(true); setShowSkills(false); }}>View Projects</button>
                 </div>

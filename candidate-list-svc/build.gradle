@@ -1,0 +1,113 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.4.5'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id "org.openapi.generator" version "$openApiGeneratorVersion"
+    id "org.jsonschema2pojo" version "$jsonSchema2PojoVersion"
+}
+sourceSets.main.java.srcDirs += "$buildDir/generated/src/main/java"
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+configurations {
+    openApiContracts
+    eventApiContracts
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'org.springframework.kafka:spring-kafka'
+    implementation "org.openapitools:jackson-databind-nullable:$openapiJacksonDatabindNullableVersion"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocOpenApiUiVersion"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+    annotationProcessor( 'org.springframework.boot:spring-boot-configuration-processor')
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    eventApiContracts files("D:/kpi/dyploma/event-contracts/build/libs/event-contracts-0.0.1-SNAPSHOT.jar")
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+openApiGenerate {
+    generatorName = 'spring'
+    inputSpec = "$rootDir/src/main/resources/candidate-spec.yaml".toString()
+    outputDir = "$buildDir/generated".toString()
+    apiPackage = 'com.example.candidatelistsvc.endpoint.rest.api'
+    modelPackage = 'com.example.candidatelistsvc.endpoint.rest.dto'
+    modelNameSuffix = 'Dto'
+    configOptions = [
+            generatedConstructorWithRequiredArgs: "false",
+            interfaceOnly                       : "true",
+            useSpringController                 : "true",
+            useTags                             : "true",
+            dateLibrary                         : "java8",
+            skipDefaultInterface                : "true",
+            useResponseEntity                   : "true",
+            useSpringBoot3                      : "true",
+            additionalModelTypeAnnotations      :
+                    """
+                    @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+                    @lombok.Builder
+                    @lombok.NoArgsConstructor
+                    @lombok.AllArgsConstructor
+                    """
+
+    ]
+    typeMappings = [
+            "OffsetDateTime" : "Instant",
+    ]
+    importMappings = [
+            "java.time.OffsetDateTime" : "java.time.Instant",
+    ]
+}
+
+compileJava.dependsOn tasks.named('openApiGenerate')
+
+task extractEventsApiContractsSchema(type: Copy) {
+    from zipTree(configurations.eventApiContracts.files.find())
+    into "$buildDir/unpacked/eventsapi"
+}
+
+tasks.named('generateJsonSchema2Pojo'){
+    dependsOn tasks.extractEventsApiContractsSchema
+}
+
+def eventJsonSchemaFileList = [
+        "$buildDir/unpacked/eventsapi/events/PersonUpdated",
+        "$buildDir/unpacked/eventsapi/events/PersonDeleted",
+        "$buildDir/unpacked/eventsapi/events/UserCreated"
+]
+
+jsonSchema2Pojo {
+    source = files(eventJsonSchemaFileList)
+    targetPackage = 'com.example.search.endpoint.messaging.dto'
+    includeAdditionalProperties = false
+    includeToString = true
+    includeHashcodeAndEquals = false
+    annotationStyle = 'jackson'
+    useTitleAsClassname = true
+    includeJsr303Annotations = true
+    useJakartaValidation = true
+}
