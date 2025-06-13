@@ -16,16 +16,20 @@ const Header = () => {
   return (
       <header className="header">
         <div className="header-left">
-          <span className="logo">Some name</span>
+          <span className="logo">Система управління персоналом</span>
         </div>
-        <nav className="header-center">
-          {role === 'USER' && <Link to={`/person/${personId}`}>Dashboard</Link>}
-          {['ADMIN', 'MANAGER', 'HR'].includes(role) && <Link to="/search">Search</Link>}
-          {['ADMIN', 'MANAGER'].includes(role) && <Link to="/create">Create User</Link>}
-          {['ADMIN', 'HR'].includes(role) && <Link to="/selection">Selection</Link>}
-        </nav>
+
+        {role && (
+            <nav className="header-center">
+              {role === 'USER' && <Link to={`/person/${personId}`}>Профіль</Link>}
+              {['ADMIN', 'MANAGER', 'HR'].includes(role) && <Link to="/search">Пошук</Link>}
+              {['ADMIN', 'MANAGER'].includes(role) && <Link to="/create">Створити користувача</Link>}
+              {['ADMIN', 'HR'].includes(role) && <Link to="/selection">Вибрані кандидати</Link>}
+            </nav>
+        )}
+
         <div className="header-right">
-          {role && <button onClick={logout}>Logout</button>}
+          {role && <button onClick={logout}>Вийти</button>}
         </div>
       </header>
   );

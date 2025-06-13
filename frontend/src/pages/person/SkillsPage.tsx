@@ -13,12 +13,8 @@ const SkillsPage = () => {
 
   const fetchSkills = async () => {
     if (!personId) return;
-    try {
-      const res = await axios.get(`http://localhost:8082/qualification/${personId}`);
-      setSkills(res.data.skills || []);
-    } catch (err) {
-      console.error("Failed to fetch skills", err);
-    }
+    const res = await axios.get(`http://localhost:8082/qualification/${personId}`);
+    setSkills(res.data.skills || []);
   };
 
   const addSkill = async () => {
@@ -40,7 +36,7 @@ const SkillsPage = () => {
 
   return (
       <div>
-        <h2>Skills</h2>
+        <h2>Навички</h2>
         <ul style={{ paddingLeft: 0 }}>
           {skills.map(skill => (
               <li key={skill.id} style={{ marginBottom: '0.5rem', listStyle: 'none' }}>
@@ -51,7 +47,7 @@ const SkillsPage = () => {
                         onClick={() => deleteSkill(skill.id)}
                         style={{ marginLeft: '1rem' }}
                     >
-                      Delete
+                      Видалити
                     </button>
                 )}
               </li>
@@ -61,11 +57,11 @@ const SkillsPage = () => {
         {canEdit && (
             <div style={{ marginTop: '1rem' }}>
               <input
-                  placeholder="New Skill"
+                  placeholder="Нова навичка"
                   value={newSkill}
                   onChange={(e) => setNewSkill(e.target.value)}
               />
-              <button className="button" onClick={addSkill}>Add Skill</button>
+              <button className="button" onClick={addSkill}>Додати навичку</button>
             </div>
         )}
       </div>

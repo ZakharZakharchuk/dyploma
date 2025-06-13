@@ -17,14 +17,12 @@ const ProjectsPage = () => {
   });
   const [isEditing, setIsEditing] = useState(false);
 
+  const canEdit = ['USER', 'ADMIN', 'MANAGER'].includes(role);
+
   const fetchProjects = async () => {
     if (!personId) return;
-    try {
-      const res = await axios.get(`http://localhost:8082/qualification/${personId}`);
-      setProjects(res.data.projects || []);
-    } catch (err) {
-      console.error("Failed to fetch projects", err);
-    }
+    const res = await axios.get(`http://localhost:8082/qualification/${personId}`);
+    setProjects(res.data.projects || []);
   };
 
   const handleSave = async () => {
@@ -52,7 +50,7 @@ const ProjectsPage = () => {
       id: p.id,
       name: p.name,
       description: p.description,
-      startDate: p.startDate.slice(0, 16), // trim ISO string for datetime-local
+      startDate: p.startDate.slice(0, 16),
       endDate: p.endDate.slice(0, 16)
     });
     setIsEditing(true);
@@ -69,7 +67,8 @@ const ProjectsPage = () => {
 
   return (
       <div>
-        <h2>Projects</h2>
+        <h2>Проєкти</h2>
+
         {projects.map(p => (
             <div key={p.id} style={{
               background: '#f9f9f9',
@@ -78,35 +77,36 @@ const ProjectsPage = () => {
               marginBottom: '1rem',
               boxShadow: '0 1px 4px rgba(0,0,0,0.1)'
             }}>
-              <p><strong>Name:</strong> {p.name}</p>
-              <p><strong>Description:</strong> {p.description}</p>
-              <p><strong>Start:</strong> {new Date(p.startDate).toLocaleDateString()}</p>
-              <p><strong>End:</strong> {new Date(p.endDate).toLocaleDateString()}</p>
-              {['USER', 'ADMIN', 'MANAGER'].includes(role) && (
+              <p><strong>Назва:</strong> {p.name}</p>
+              <p><strong>Опис:</strong> {p.description}</p>
+              <p><strong>Початок:</strong> {new Date(p.startDate).toLocaleDateString()}</p>
+              <p><strong>Завершення:</strong> {new Date(p.endDate).toLocaleDateString()}</p>
+              {canEdit && (
                   <>
                     <button
-                        className="button secondary"
+                        className="button danger"
                         onClick={() => handleDelete(p.id)}
                         style={{ marginRight: '0.5rem' }}
                     >
-                      Delete
+                      Видалити
                     </button>
-                    <button className="button" onClick={() => handleEdit(p)}>Edit</button>
+                    <button className="button" onClick={() => handleEdit(p)}>Редагувати</button>
                   </>
               )}
             </div>
         ))}
 
-        {['USER', 'ADMIN', 'MANAGER'].includes(role) && (
+        {canEdit && (
             <>
-              <h3>{isEditing ? 'Edit Project' : 'Add Project'}</h3>
+              <h3>{isEditing ? 'Редагування проєкту' : 'Додавання проєкту'}</h3>
+
               <input
-                  placeholder="Name"
+                  placeholder="Назва"
                   value={project.name}
                   onChange={(e) => setProject({ ...project, name: e.target.value })}
               />
               <input
-                  placeholder="Description"
+                  placeholder="Опис"
                   value={project.description}
                   onChange={(e) => setProject({ ...project, description: e.target.value })}
               />
@@ -120,8 +120,9 @@ const ProjectsPage = () => {
                   value={project.endDate}
                   onChange={(e) => setProject({ ...project, endDate: e.target.value })}
               />
+
               <button className="button" onClick={handleSave}>
-                {isEditing ? 'Update Project' : 'Add Project'}
+                {isEditing ? 'Оновити проєкт' : 'Додати проєкт'}
               </button>
               {isEditing && (
                   <button
@@ -132,7 +133,7 @@ const ProjectsPage = () => {
                       }}
                       style={{ marginLeft: '0.5rem' }}
                   >
-                    Cancel
+                    Скасувати
                   </button>
               )}
             </>

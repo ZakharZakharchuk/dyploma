@@ -12,7 +12,7 @@ paths:
     post:
       tags:
         - Search
-      summary: Complex search across multiple optional fields
+      summary: Complex search across multiple optional fields with pagination
       requestBody:
         required: true
         content:
@@ -21,13 +21,11 @@ paths:
               $ref: '#/components/schemas/PersonSearchCriteria'
       responses:
         '200':
-          description: List of person profiles matching the criteria
+          description: Paginated list of person profiles matching the criteria
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PersonProfile'
+                $ref: '#/components/schemas/PageResultPersonProfile'
         '400':
           description: Invalid search request
           content:
@@ -82,6 +80,17 @@ components:
           type: string
         projectDescription:
           type: string
+        page:
+          type: integer
+          format: int32
+          minimum: 0
+          description: Page number (0-based)
+        size:
+          type: integer
+          format: int32
+          minimum: 1
+          default: 10
+          description: Number of items per page
 
     PersonProfile:
       type: object
@@ -127,6 +136,26 @@ components:
           type: array
           items:
             type: string
+
+    PageResultPersonProfile:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/PersonProfile'
+        total:
+          type: integer
+          format: int64
+          description: Total number of matched records
+        page:
+          type: integer
+          format: int32
+          description: Current page number
+        size:
+          type: integer
+          format: int32
+          description: Page size (number of records per page)
 
     ProjectInfo:
       type: object

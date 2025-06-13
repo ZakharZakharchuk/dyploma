@@ -1,3 +1,4 @@
+/*
 package com.example.userservice.domain.exception;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -45,7 +46,8 @@ public class GeneralExceptionHandler {
                     .build());
     }
 
-    @ExceptionHandler({MethodArgumentNotValidException.class, MissingRequestHeaderException.class,
+    */
+/*@ExceptionHandler({MethodArgumentNotValidException.class, MissingRequestHeaderException.class,
           HttpMessageNotReadableException.class, HttpMediaTypeException.class})
     public ResponseEntity<BaseErrorResponseDto> handleValidationException(
           MethodArgumentNotValidException exception, HttpServletRequest request) {
@@ -57,9 +59,11 @@ public class GeneralExceptionHandler {
                     .instance(request.getRequestURI())
                     .details(exception.getBindingResult().toString())
                     .build());
-    }
+    }*//*
 
-    @ExceptionHandler(Exception.class)
+
+    */
+/*@ExceptionHandler(Exception.class)
     public ResponseEntity<BaseErrorResponseDto> handleUnexpectedException(
           Exception exception, HttpServletRequest request) {
         log.error("Unexpected error occurred", exception);
@@ -71,5 +75,7 @@ public class GeneralExceptionHandler {
                     .instance(request.getRequestURI())
                     .details(exception.getMessage())
                     .build());
-    }
+    }*//*
+
 }
+*/

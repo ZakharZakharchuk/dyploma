@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
-public class PersonnelController implements DefaultApi {
+public class PersonnelController implements PersonApi {
 
     private final PersonService personService;
     private final PersonDtoMapper personDtoMapper;

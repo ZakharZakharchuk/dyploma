@@ -10,46 +10,59 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    try {
-      const res = await axios.post("http://localhost:8084/auth/login", { email, password });
-      saveTokens(res.data.accessToken, res.data.refreshToken);
-      const decoded = jwtDecode<{ role: string; personId: string }>(res.data.accessToken);
+    const res = await axios.post("http://localhost:8084/auth/login", { email, password });
+    saveTokens(res.data.accessToken, res.data.refreshToken);
 
-      if (decoded.role === "USER") navigate(`/person/${decoded.personId}`);
-      else navigate("/search");
-    } catch (e) {
-      alert("Login failed");
-    }
+    const decoded = jwtDecode<{ role: string; personId: string }>(res.data.accessToken);
+
+    if (decoded.role === "USER") navigate(`/person/${decoded.personId}`);
+    else navigate("/search");
   };
 
   return (
-      <div className="main-content">
-        <form
-            className="container"
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleLogin();
-            }}
-        >
-          <h2 style={{ textAlign: "center" }}>Login</h2>
-          <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email"
-              required
-          />
-          <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-              required
-          />
-          <button className="button" type="submit">
-            Login
-          </button>
-        </form>
+      <div style={{ backgroundColor: "#f3efdb", padding: "2rem", minHeight: "100vh" }}>
+        <div style={{
+          maxWidth: "500px",
+          margin: "0 auto",
+          backgroundColor: "#fff",
+          padding: "2rem",
+          borderRadius: "8px",
+          boxShadow: "0 0 10px rgba(0,0,0,0.1)"
+        }}>
+          <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleLogin();
+              }}
+              style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+          >
+            <h2 style={{ textAlign: "center" }}>Вхід до системи</h2>
+
+            <label>
+              Email:
+              <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="example@email.com"
+                  required
+              />
+            </label>
+
+            <label>
+              Пароль:
+              <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="********"
+                  required
+              />
+            </label>
+
+            <button className="button" type="submit">Увійти</button>
+          </form>
+        </div>
       </div>
   );
 };

@@ -6,6 +6,7 @@ import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
+import com.example.search.domain.model.PageResult;
 import com.example.search.domain.model.PersonProfile;
 import com.example.search.domain.model.PersonSearchQuery;
 import com.example.search.domain.port.PersonProfileProvider;
@@ -48,12 +49,12 @@ public class PersonProfileProviderImpl implements PersonProfileProvider {
         personProfileRepository.deleteById(id);
     }
 
-    public List<PersonProfile> search(PersonSearchQuery criteria) {
-        List<Query> mustQueries = new ArrayList<>(); // For scored relevance
-        List<Query> filterQueries = new ArrayList<>(); // For non-scored filters
-        List<Query> shouldQueries = new ArrayList<>(); // For boosting optional matches
+    public PageResult search(PersonSearchQuery criteria) {
+        List<Query> mustQueries = new ArrayList<>();
+        List<Query> filterQueries = new ArrayList<>();
+        List<Query> shouldQueries = new ArrayList<>();
 
-        // 🔥 High Relevance (must + boost)
+        // 🔥 High Relevance
         if (criteria.rank() != null) {
             mustQueries.add(
                   Query.of(q -> q.match(m -> m.field("rank").query(criteria.rank()).boost(2.0f))));
@@ -66,68 +67,66 @@ public class PersonProfileProviderImpl implements PersonProfileProvider {
             )));
         }
 
-        // ✅ Medium relevance (should)
+        // ✅ Medium Relevance (як skills, точний пошук по keyword)
         if (criteria.projectName() != null || criteria.projectDescription() != null) {
-            List<Query> nestedShoulds = new ArrayList<>();
+            List<Query> nestedMust = new ArrayList<>();
 
             if (criteria.projectName() != null) {
-                nestedShoulds.add(Query.of(q -> q.match(
-                      m -> m.field("pastProjects.name").query(criteria.projectName()))));
-            }
-            if (criteria.projectDescription() != null) {
-                nestedShoulds.add(Query.of(q -> q.match(m -> m.field("pastProjects.description")
-                      .query(criteria.projectDescription()))));
+                nestedMust.add(Query.of(q -> q.term(
+                      t -> t.field("pastProjects.name.keyword").value(criteria.projectName())
+                )));
             }
 
-            if (!nestedShoulds.isEmpty()) {
-                shouldQueries.add(Query.of(q -> q.nested(n -> n
+            if (criteria.projectDescription() != null) {
+                nestedMust.add(Query.of(q -> q.term(
+                      t -> t.field("pastProjects.description.keyword").value(criteria.projectDescription())
+                )));
+            }
+
+            if (!nestedMust.isEmpty()) {
+                mustQueries.add(Query.of(q -> q.nested(n -> n
                       .path("pastProjects")
-                      .query(Query.of(b -> b.bool(bb -> bb.should(nestedShoulds))))
+                      .query(Query.of(b -> b.bool(bb -> bb.must(nestedMust))))
                 )));
             }
         }
+
 
         if (criteria.location() != null) {
             filterQueries.add(Query.of(
                   q -> q.term(t -> t.field("location.keyword").value(criteria.location()))));
         }
 
-        // ✅ Low Relevance — used as optional match
+        // ✅ Low Relevance
         if (criteria.name() != null) {
             shouldQueries.add(Query.of(q -> q.match(m -> m.field("name").query(criteria.name()))));
         }
-
         if (criteria.surname() != null) {
             shouldQueries.add(
                   Query.of(q -> q.match(m -> m.field("surname").query(criteria.surname()))));
         }
 
-        // ❌ No relevance — only filter
+        // ❌ Filters only
         if (criteria.email() != null) {
             filterQueries.add(
                   Query.of(q -> q.term(t -> t.field("email.keyword").value(criteria.email()))));
         }
-
         if (criteria.phone() != null) {
             filterQueries.add(
                   Query.of(q -> q.term(t -> t.field("phone.keyword").value(criteria.phone()))));
         }
-
         if (criteria.commanderId() != null) {
             filterQueries.add(Query.of(
                   q -> q.term(t -> t.field("commanderId.keyword").value(criteria.commanderId()))));
         }
-
         if (criteria.department() != null) {
             filterQueries.add(Query.of(
                   q -> q.term(t -> t.field("department.keyword").value(criteria.department()))));
         }
-
         if (criteria.currentPosition() != null) {
             filterQueries.add(Query.of(q -> q.term(
                   t -> t.field("currentPosition.keyword").value(criteria.currentPosition()))));
         }
-
         if (criteria.certifications() != null && !criteria.certifications().isEmpty()) {
             filterQueries.add(Query.of(q -> q.terms(t -> t
                   .field("certifications.keyword")
@@ -136,7 +135,7 @@ public class PersonProfileProviderImpl implements PersonProfileProvider {
             )));
         }
 
-        // Assemble full query
+        // Final bool query
         BoolQuery.Builder boolQueryBuilder = new BoolQuery.Builder();
         if (!mustQueries.isEmpty()) {
             boolQueryBuilder.must(mustQueries);
@@ -151,21 +150,33 @@ public class PersonProfileProviderImpl implements PersonProfileProvider {
         Query finalQuery = Query.of(q -> q.bool(boolQueryBuilder.build()));
 
         try {
+            int from = criteria.page() * criteria.size();
+
             SearchRequest request = SearchRequest.of(s -> s
                   .index("person_profiles")
                   .query(finalQuery)
+                  .from(from)
+                  .size(criteria.size())
             );
 
-            SearchResponse<PersonProfileEntity> response = elasticsearchClient.search(request,
-                  PersonProfileEntity.class);
+            SearchResponse<PersonProfileEntity> response = elasticsearchClient.search(
+                  request,
+                  PersonProfileEntity.class
+            );
 
-            return response.hits().hits().stream()
+            List<PersonProfile> items = response.hits().hits().stream()
                   .map(hit -> personProfileEntityMapper.toDomain(hit.source()))
                   .filter(Objects::nonNull)
                   .collect(Collectors.toList());
+
+            long totalHits =
+                  response.hits().total() != null ? response.hits().total().value() : items.size();
+
+            return new PageResult(items, totalHits, criteria.page(), criteria.size());
 
         } catch (IOException e) {
             throw new RuntimeException("Elasticsearch query failed", e);
         }
     }
+
 }

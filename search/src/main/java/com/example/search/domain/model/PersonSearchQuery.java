@@ -6,6 +6,6 @@ public record PersonSearchQuery(String name, String surname, String email, Strin
                                 String location, String rank, String department,
                                 String currentPosition, String commanderId, List<String> skills,
                                 List<String> certifications, String projectName,
-                                String projectDescription) {
+                                String projectDescription, int page, int size) {
 
 }

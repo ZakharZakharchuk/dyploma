@@ -23,7 +23,7 @@ public class CandidateController implements HrSelectionApi {
     private final AuthorizationService authorizationService;
 
     @Override
-    public ResponseEntity<Void> hrSelectionDelete(String id) {
+    public ResponseEntity<Void> selectionDelete(String id) {
         if (authorizationService.isHR() || authorizationService.isAdmin()) {
             selectionEntryService.deleteSelectionEntry(id,
                   authorizationService.getUserDetails().personId());
@@ -33,7 +33,7 @@ public class CandidateController implements HrSelectionApi {
     }
 
     @Override
-    public ResponseEntity<List<HRSelectionEntryDto>> hrSelectionGet() {
+    public ResponseEntity<List<HRSelectionEntryDto>> selectionGet() {
         if (authorizationService.isHR() || authorizationService.isAdmin()) {
             return ResponseEntity.ok(
                   selectionEntryService.getSelectionEntriesByHrId(
@@ -47,7 +47,7 @@ public class CandidateController implements HrSelectionApi {
     }
 
     @Override
-    public ResponseEntity<Void> hrSelectionPost(AddToSelectionRequestDto
+    public ResponseEntity<Void> selectionPost(AddToSelectionRequestDto
           addToSelectionRequestDto) {
         if (authorizationService.isHR() || authorizationService.isAdmin()) {
             selectionEntryService.createSelectionEntry(
@@ -62,7 +62,7 @@ public class CandidateController implements HrSelectionApi {
     }
 
     @Override
-    public ResponseEntity<Void> hrSelectionStatusPut(
+    public ResponseEntity<Void> selectionStatusPut(
           UpdateSelectionStatusRequestDto updateSelectionStatusRequestDto) {
         if (authorizationService.isHR() || authorizationService.isAdmin()) {
             selectionEntryService.updateSelectionStatus(

@@ -2,10 +2,19 @@ openapi: 3.0.0
 info:
   title: Person Service API
   version: 1.0.0
+  description: API documentation for managing personnel data
+  contact:
+    name: Zakhar Zakharchuk
+
+tags:
+  - name: PersonApi
+    description: Operations related to personnel management
 
 paths:
   /person:
     post:
+      tags:
+        - Person
       summary: Save a new person record
       requestBody:
         required: true
@@ -36,6 +45,8 @@ paths:
                 $ref: '#/components/schemas/BaseErrorResponse'
 
     put:
+      tags:
+        - Person
       summary: Update person details
       requestBody:
         required: true
@@ -73,6 +84,8 @@ paths:
 
   /person/{id}:
     get:
+      tags:
+        - Person
       summary: Find person by ID
       parameters:
         - name: id
@@ -113,6 +126,8 @@ paths:
                 $ref: '#/components/schemas/BaseErrorResponse'
 
     delete:
+      tags:
+        - Person
       summary: Delete person record
       parameters:
         - name: id

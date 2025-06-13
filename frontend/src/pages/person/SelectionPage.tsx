@@ -2,7 +2,12 @@ import React, { useEffect, useState } from 'react';
 import axios from '../../axios';
 import { Link } from 'react-router-dom';
 
-const STATUS_OPTIONS = ['PENDING', 'REVIEWED', 'SHORTLISTED', 'REJECTED'];
+const STATUS_OPTIONS: { value: string, label: string }[] = [
+  { value: 'PENDING', label: 'Очікує' },
+  { value: 'REVIEWED', label: 'Переглянуто' },
+  { value: 'SHORTLISTED', label: 'У короткому списку' },
+  { value: 'REJECTED', label: 'Відхилено' },
+];
 
 const SelectionPage = () => {
   const [selection, setSelection] = useState<any[]>([]);
@@ -10,59 +15,54 @@ const SelectionPage = () => {
   const [persons, setPersons] = useState<Record<string, { name: string, surname: string }>>({});
 
   useEffect(() => {
-    axios.get('http://localhost:8085/hr-selection')
-    .then(async res => {
-      const entries = res.data;
-      setSelection(entries);
+    const loadData = async () => {
+      try {
+        const { data: entries } = await axios.get('http://localhost:8085/selection');
+        setSelection(entries);
 
-      const fetchPersons = await Promise.all(
-          entries.map(async (entry: any) => {
-            try {
-              const res = await axios.get(`http://localhost:8083/person/${entry.candidateId}`);
-              return { id: entry.candidateId, name: res.data.name, surname: res.data.surname };
-            } catch {
-              return { id: entry.candidateId, name: 'Unknown', surname: '' };
-            }
-          })
-      );
+        const fetchPersons = await Promise.all(
+            entries.map(async (entry: any) => {
+              try {
+                const res = await axios.get(`http://localhost:8083/person/${entry.candidateId}`);
+                return { id: entry.candidateId, name: res.data.name, surname: res.data.surname };
+              } catch {
+                return { id: entry.candidateId, name: 'Невідомо', surname: '' };
+              }
+            })
+        );
 
-      const personMap: Record<string, { name: string, surname: string }> = {};
-      fetchPersons.forEach(p => {
-        personMap[p.id] = { name: p.name, surname: p.surname };
-      });
+        const personMap: Record<string, { name: string, surname: string }> = {};
+        fetchPersons.forEach(p => {
+          personMap[p.id] = { name: p.name, surname: p.surname };
+        });
 
-      setPersons(personMap);
-    })
-    .catch(() => alert('Failed to load selected users'))
-    .finally(() => setLoading(false));
+        setPersons(personMap);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
   }, []);
 
   const handleRemove = async (selectionId: string) => {
-    try {
-      await axios.delete('http://localhost:8085/hr-selection', {
-        params: { selectionId }
-      });
-      setSelection(prev => prev.filter(entry => entry.id !== selectionId));
-    } catch (error) {
-      alert('Failed to remove from selection list');
-    }
+    await axios.delete('http://localhost:8085/selection', {
+      params: { selectionId }
+    });
+    setSelection(prev => prev.filter(entry => entry.id !== selectionId));
   };
 
   const handleStatusChange = async (selectionId: string, newStatus: string) => {
-    try {
-      await axios.put('http://localhost:8085/hr-selection/status', {
-        selectionId,
-        status: newStatus
-      });
+    await axios.put('http://localhost:8085/selection/status', {
+      selectionId,
+      status: newStatus
+    });
 
-      setSelection(prev =>
-          prev.map(entry =>
-              entry.id === selectionId ? { ...entry, status: newStatus } : entry
-          )
-      );
-    } catch {
-      alert('Failed to update status');
-    }
+    setSelection(prev =>
+        prev.map(entry =>
+            entry.id === selectionId ? { ...entry, status: newStatus } : entry
+        )
+    );
   };
 
   return (
@@ -75,22 +75,22 @@ const SelectionPage = () => {
           borderRadius: '8px',
           boxShadow: '0 0 10px rgba(0,0,0,0.1)'
         }}>
-          <h2 style={{ textAlign: 'center' }}>Selected Users</h2>
+          <h2 style={{ textAlign: 'center' }}>Обрані кандидати</h2>
           {loading ? (
-              <p>Loading...</p>
+              <p>Завантаження...</p>
           ) : (
               <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1rem' }}>
                 <thead>
                 <tr style={{ backgroundColor: '#eaeaea' }}>
-                  <th style={{ border: '1px solid #ccc', padding: '8px' }}>Name</th>
-                  <th style={{ border: '1px solid #ccc', padding: '8px' }}>Note</th>
-                  <th style={{ border: '1px solid #ccc', padding: '8px' }}>Status</th>
-                  <th style={{ border: '1px solid #ccc', padding: '8px' }}>Actions</th>
+                  <th style={{ border: '1px solid #ccc', padding: '8px' }}>ПІБ</th>
+                  <th style={{ border: '1px solid #ccc', padding: '8px' }}>Примітка</th>
+                  <th style={{ border: '1px solid #ccc', padding: '8px' }}>Статус</th>
+                  <th style={{ border: '1px solid #ccc', padding: '8px' }}>Дії</th>
                 </tr>
                 </thead>
                 <tbody>
                 {selection.map(entry => {
-                  const person = persons[entry.candidateId] || { name: 'Unknown', surname: '' };
+                  const person = persons[entry.candidateId] || { name: 'Невідомо', surname: '' };
                   return (
                       <tr key={entry.id}>
                         <td style={{ border: '1px solid #ccc', padding: '8px' }}>
@@ -104,13 +104,13 @@ const SelectionPage = () => {
                               value={entry.status || 'PENDING'}
                               onChange={(e) => handleStatusChange(entry.id, e.target.value)}
                           >
-                            {STATUS_OPTIONS.map(status => (
-                                <option key={status} value={status}>{status}</option>
+                            {STATUS_OPTIONS.map(opt => (
+                                <option key={opt.value} value={opt.value}>{opt.label}</option>
                             ))}
                           </select>
                         </td>
                         <td style={{ border: '1px solid #ccc', padding: '8px' }}>
-                          <button className="button danger" onClick={() => handleRemove(entry.id)}>Remove</button>
+                          <button className="button danger" onClick={() => handleRemove(entry.id)}>Видалити</button>
                         </td>
                       </tr>
                   );

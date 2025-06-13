@@ -1,6 +1,7 @@
 package com.example.search.domain.service;
 
 import com.example.search.domain.exception.ConsumerNonRetryableException;
+import com.example.search.domain.model.PageResult;
 import com.example.search.domain.model.PersonProfile;
 import com.example.search.domain.model.PersonSearchQuery;
 import com.example.search.domain.port.PersonProfileProvider;
@@ -20,7 +21,7 @@ public class PersonProfileService {
               .orElseThrow(() -> new ConsumerNonRetryableException("Person profile not found"));
     }
 
-    public List<PersonProfile> search(PersonSearchQuery query) {
+    public PageResult search(PersonSearchQuery query) {
         return personProfileProvider.search(query);
     }
 

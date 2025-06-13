@@ -1,5 +1,6 @@
 package com.example.search.domain.port;
 
+import com.example.search.domain.model.PageResult;
 import com.example.search.domain.model.PersonProfile;
 import com.example.search.domain.model.PersonSearchQuery;
 import java.util.List;
@@ -13,5 +14,5 @@ public interface PersonProfileProvider {
 
     void deleteById(String id);
 
-    List<PersonProfile> search(PersonSearchQuery query);
+    PageResult search(PersonSearchQuery criteria);
 }

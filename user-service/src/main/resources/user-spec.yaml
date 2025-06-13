@@ -73,12 +73,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BaseErrorResponse'
-        '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BaseErrorResponse'
         '500':
           description: Internal server error
           content:

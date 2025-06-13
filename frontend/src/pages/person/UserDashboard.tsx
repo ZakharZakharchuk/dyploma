@@ -16,6 +16,7 @@ const UserDashboard = () => {
   const [projects, setProjects] = useState<any[]>([]);
   const [showSkills, setShowSkills] = useState(false);
   const [showProjects, setShowProjects] = useState(false);
+  const [note, setNote] = useState('');
 
   useEffect(() => {
     if (personId) {
@@ -35,24 +36,24 @@ const UserDashboard = () => {
     let y = 15;
 
     doc.setFontSize(18);
-    doc.text('Personnel Profile', 105, y, { align: 'center' });
+    doc.text('Профіль військовослужбовця', 105, y, { align: 'center' });
 
     doc.setFontSize(12);
     y += 15;
 
     const lines = [
-      `Person ID: ${person.id}`,
-      `Name: ${person.name} ${person.surname}`,
+      `ID особи: ${person.id}`,
+      `ПІБ: ${person.name} ${person.surname}`,
       `Email: ${person.email}`,
-      `Phone: ${person.phone}`,
-      `Location: ${person.location}`,
-      `Date of Birth: ${new Date(person.dateOfBirth).toLocaleDateString()}`,
-      `Start of Service: ${new Date(person.startOfServiceDate).toLocaleDateString()}`,
-      `Rank: ${person.rank}`,
-      `Department: ${person.department}`,
-      `Current Position: ${person.currentPosition}`,
-      `Commander ID: ${person.commanderId}`,
-      `Last Updated: ${new Date(person.lastUpdated).toLocaleString()}`
+      `Телефон: ${person.phone}`,
+      `Місце служби: ${person.location}`,
+      `Дата народження: ${new Date(person.dateOfBirth).toLocaleDateString()}`,
+      `Дата початку служби: ${new Date(person.startOfServiceDate).toLocaleDateString()}`,
+      `Військове звання: ${person.rank}`,
+      `Підрозділ: ${person.department}`,
+      `Посада: ${person.currentPosition}`,
+      `ID командира: ${person.commanderId}`,
+      `Останнє оновлення: ${new Date(person.lastUpdated).toLocaleString()}`
     ];
 
     lines.forEach(text => {
@@ -69,12 +70,12 @@ const UserDashboard = () => {
 
     doc.setFontSize(14);
     y += 6;
-    doc.text('Skills', margin, y);
+    doc.text('Навички', margin, y);
     y += lineHeight;
 
     doc.setFontSize(12);
     if (skills.length === 0) {
-      doc.text('- No skills listed.', margin + 5, y);
+      doc.text('- Немає навичок.', margin + 5, y);
       y += lineHeight;
     } else {
       skills.forEach(skill => {
@@ -89,12 +90,12 @@ const UserDashboard = () => {
 
     doc.setFontSize(14);
     y += 6;
-    doc.text('Projects', margin, y);
+    doc.text('Операції / проєкти', margin, y);
     y += lineHeight;
 
     doc.setFontSize(12);
     if (projects.length === 0) {
-      doc.text('- No projects listed.', margin + 5, y);
+      doc.text('- Немає проєктів.', margin + 5, y);
       y += lineHeight;
     } else {
       projects.forEach(p => {
@@ -111,82 +112,107 @@ const UserDashboard = () => {
       });
     }
 
-    doc.save(`${person.name}_${person.surname}_profile.pdf`);
+    doc.save(`${person.name}_${person.surname}_профіль.pdf`);
   };
 
   const handleAddToSelection = async () => {
-    try {
-      await axios.post('http://localhost:8085/hr-selection', {
-        candidateId: person.id,
-        note: `Added by ${role} via dashboard`
-      });
-      alert('Candidate added to your selection list!');
-    } catch (error) {
-      alert('Failed to add candidate to selection.');
-    }
+    await axios.post('http://localhost:8085/selection', {
+      candidateId: person.id,
+      note: note || `Додано ${role} через інтерфейс`
+    });
+    alert('Кандидата додано до вашого списку.');
   };
 
   const handleDeleteUser = async () => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this user? This action cannot be undone.');
+    const confirmDelete = window.confirm('Ви впевнені, що хочете видалити цього користувача? Цю дію неможливо скасувати.');
     if (!confirmDelete) return;
 
-    try {
-      await axios.delete(`http://localhost:8083/person/${person.id}`);
-      alert('User deleted successfully.');
-      window.location.href = '/search';
-    } catch (error) {
-      alert('Failed to delete user.');
-    }
+    await axios.delete(`http://localhost:8083/person/${person.id}`);
+    alert('Користувача успішно видалено.');
+    window.location.href = '/search';
   };
 
   return (
       <div style={{ backgroundColor: '#f3efdb', padding: '2rem', minHeight: 'calc(100vh - 120px)' }}>
-        <div style={{ maxWidth: '900px', margin: '0 auto', backgroundColor: '#fff', padding: '2rem', borderRadius: '8px', boxShadow: '0 0 10px rgba(0,0,0,0.1)' }}>
+        <div style={{
+          maxWidth: '900px',
+          margin: '0 auto',
+          backgroundColor: '#fff',
+          padding: '2rem',
+          borderRadius: '8px',
+          boxShadow: '0 0 10px rgba(0,0,0,0.1)'
+        }}>
           {person ? (
               <>
-                <h2 style={{ textAlign: 'center' }}>Profile info</h2>
+                <h2 style={{ textAlign: 'center' }}>Профіль особи</h2>
                 <div style={{ textAlign: 'left' }}>
-                  <p><strong>Person ID:</strong> {person.id}</p>
-                  <p><strong>Name:</strong> {person.name} {person.surname}</p>
-                  <p><strong>Email:</strong> {person.email}</p>
-                  <p><strong>Phone:</strong> {person.phone}</p>
-                  <p><strong>Location:</strong> {person.location}</p>
-                  <p><strong>Date of Birth:</strong> {new Date(person.dateOfBirth).toLocaleDateString()}</p>
-                  <p><strong>Start of Service:</strong> {new Date(person.startOfServiceDate).toLocaleDateString()}</p>
-                  <p><strong>Rank:</strong> {person.rank}</p>
-                  <p><strong>Department:</strong> {person.department}</p>
-                  <p><strong>Current Position:</strong> {person.currentPosition}</p>
-                  <p><strong>Commander ID:</strong> {person.commanderId}</p>
-                  <p><strong>Last Updated:</strong> {new Date(person.lastUpdated).toLocaleString()}</p>
+                  <p><strong>ID особи:</strong> {person.id}</p>
+                  <p><strong>ПІБ:</strong> {person.name} {person.surname}</p>
+                  <p><strong>Електронна пошта:</strong> {person.email}</p>
+                  <p><strong>Телефон:</strong> {person.phone}</p>
+                  <p><strong>Місце служби:</strong> {person.location}</p>
+                  <p><strong>Дата народження:</strong> {new Date(person.dateOfBirth).toLocaleDateString()}</p>
+                  <p><strong>Дата початку служби:</strong> {new Date(person.startOfServiceDate).toLocaleDateString()}</p>
+                  <p><strong>Звання:</strong> {person.rank}</p>
+                  <p><strong>Підрозділ:</strong> {person.department}</p>
+                  <p><strong>Посада:</strong> {person.currentPosition}</p>
+                  <p><strong>ID командира:</strong> {person.commanderId}</p>
+                  <p><strong>Останнє оновлення:</strong> {new Date(person.lastUpdated).toLocaleString()}</p>
                 </div>
 
                 <div style={{ marginTop: '1rem', display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'center' }}>
-                  <button className="button" onClick={generatePdf}>Download PDF</button>
+                  <button className="button" onClick={generatePdf}>Завантажити PDF</button>
 
                   {['ADMIN', 'MANAGER'].includes(role) && (
                       <button
                           className="button secondary"
                           onClick={() => window.location.href = `/person/${person.id}/update`}
                       >
-                        Update Info
+                        Оновити інформацію
                       </button>
                   )}
 
                   {['ADMIN', 'HR'].includes(role) && (
                       <button className="button" onClick={handleAddToSelection}>
-                        Add to Selection List
+                        Додати до списку відбору
                       </button>
                   )}
 
                   {role === 'ADMIN' && (
                       <button className="button danger" onClick={handleDeleteUser}>
-                        Delete User
+                        Видалити користувача
                       </button>
                   )}
 
-                  <button className="button" onClick={() => { setShowSkills(true); setShowProjects(false); }}>View Skills</button>
-                  <button className="button" onClick={() => { setShowProjects(true); setShowSkills(false); }}>View Projects</button>
+                  <button className="button" onClick={() => { setShowSkills(true); setShowProjects(false); }}>
+                    Переглянути навички
+                  </button>
+                  <button className="button" onClick={() => { setShowProjects(true); setShowSkills(false); }}>
+                    Переглянути проєкти
+                  </button>
                 </div>
+
+                {['ADMIN', 'HR'].includes(role) && (
+                    <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'center' }}>
+                <textarea
+                    value={note}
+                    onChange={(e) => setNote(e.target.value)}
+                    placeholder="Нотатка для HR списку..."
+                    style={{
+                      color: '#000',
+                      border: 'none',
+                      borderRadius: '8px',
+                      padding: '0.75rem 1rem',
+                      width: '300px',
+                      minHeight: '70px',
+                      resize: 'none',
+                      fontSize: '14px',
+                      fontFamily: 'inherit',
+                      boxShadow: '0 0 5px rgba(0,0,0,0.1)'
+                    }}
+                />
+                    </div>
+                )}
 
                 <div style={{ marginTop: '2rem' }}>
                   {showSkills && <SkillsPage />}
@@ -194,7 +220,7 @@ const UserDashboard = () => {
                 </div>
               </>
           ) : (
-              <p>Loading personal info...</p>
+              <p>Завантаження даних...</p>
           )}
         </div>
       </div>

@@ -2,8 +2,10 @@ package com.example.search.endpoint.rest.api;
 
 import com.example.search.domain.service.AuthorizationService;
 import com.example.search.domain.service.PersonProfileService;
+import com.example.search.endpoint.mapper.PageResultDtoMapper;
 import com.example.search.endpoint.mapper.PersonProfileDtoMapper;
 import com.example.search.endpoint.mapper.PersonSearchCriteriaDtoMapper;
+import com.example.search.endpoint.rest.dto.PageResultPersonProfileDto;
 import com.example.search.endpoint.rest.dto.PersonProfileDto;
 import com.example.search.endpoint.rest.dto.PersonSearchCriteriaDto;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -23,17 +25,17 @@ public class PersonProfileController implements SearchApi {
     private final PersonProfileDtoMapper personProfileDtoMapper;
     private final PersonSearchCriteriaDtoMapper personSearchCriteriaDtoMapper;
     private final AuthorizationService authorizationService;
+    private final PageResultDtoMapper pageResultDtoMapper;
 
     @Override
-    public ResponseEntity<List<PersonProfileDto>> apiSearchPersonsSearchPost(
+    public ResponseEntity<PageResultPersonProfileDto> apiSearchPersonsSearchPost(
           PersonSearchCriteriaDto personSearchCriteriaDto) {
         if (authorizationService.isAdmin() ||
               authorizationService.isManager() ||
               authorizationService.isHR()) {
-            List<PersonProfileDto> result = personProfileService.search(
-                        personSearchCriteriaDtoMapper.toDomain(personSearchCriteriaDto)).stream()
-                  .map(personProfileDtoMapper::toDto)
-                  .collect(Collectors.toList());
+            PageResultPersonProfileDto result = pageResultDtoMapper.toDto(
+                  personProfileService.search(
+                        personSearchCriteriaDtoMapper.toDomain(personSearchCriteriaDto)));
             return ResponseEntity.ok(result);
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
